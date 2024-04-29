@@ -45,6 +45,10 @@ class Book(models.Model):
     def get_absolute_url(self):
         return reverse('book_detail', args=[str(self.id)])
 
+    def display_author(self):
+        return ', '.join([author.last_name for author in self.author.all()])
+    display_author.short_description = 'Авторы'
+
 
 class Status(models.Model):
     name = models.CharField(max_length=20, help_text="Введите статус экземпляра книги",
@@ -54,16 +58,16 @@ class Status(models.Model):
         return self.name
 
 
-    class BookInstance(models.Model):
-        book = models.ForeignKey('Book', on_delete=models.CASCADE, null=True)
-        inv_now = models.CharField(max_length=20, null=True, help_text="Введите инвентарный номер экземпляра",
-                                   verbose_name="Инвентарный номер")
-        imprint = models.CharField(max_length=200, help_text="Введите издательство и год выпуска",
-                                   verbose_name="Издательство")
-        status = models.ForeignKey('Status', on_delete=models.CASCADE, help_text="Изменить состояние экземпляра",
-                                   verbose_name="Статус экземпляра книги", null=True)
-        due_back = models.DateField(null=True, blank=True, help_text="Введите конец срока статуса",
-                                    verbose_name="Дата окончания статуса")
+class BookStatus(models.Model):
+    book = models.ForeignKey('Book', on_delete=models.CASCADE, null=True)
+    inv_now = models.CharField(max_length=20, null=True, help_text="Введите инвентарный номер экземпляра",
+                               verbose_name="Инвентарный номер")
+    imprint = models.CharField(max_length=200, help_text="Введите издательство и год выпуска",
+                               verbose_name="Издательство")
+    status = models.ForeignKey('Status', on_delete=models.CASCADE, help_text="Изменить состояние экземпляра",
+                               verbose_name="Статус экземпляра книги", null=True)
+    due_back = models.DateField(null=True, blank=True, help_text="Введите конец срока статуса",
+                                verbose_name="Дата окончания статуса")
 
-        def __str__(self):
-            return '%s %s %s' % (self.inv_now, self.book, self.status)
+    def __str__(self):
+        return '%s %s %s' % (self.inv_now, self.book, self.status)
