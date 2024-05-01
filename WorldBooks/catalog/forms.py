@@ -14,4 +14,7 @@ class AuthorsForm(forms.Form):
                                     widget=forms.widgets.DateInput(attrs={'type': 'date'}))
 
 
-
+class BookModelForm(ModelForm):
+    class Meta:
+        model = Book
+        fields = ['title', 'genre', 'language', 'author', 'summary', 'isbn', 'image']
